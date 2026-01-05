@@ -3,6 +3,7 @@ const pastebin = new PastebinAPI('EMWTMkQAVfJa9kM-MRUrxd5Oku1U7pgL');
 const { makeid } = require('./id');
 const express = require('express');
 const fs = require('fs');
+const zlib = require('zlib'); // Added zlib
 let router = express.Router();
 const pino = require('pino');
 const {
@@ -51,8 +52,12 @@ router.get('/', async (req, res) => {
                     await delay(5000);
                     let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
                     await delay(800);
-                    let b64data = Buffer.from(data).toString('base64');
-                    let session = await Pair_Code_By_Mbuvi_Tech.sendMessage(Pair_Code_By_Mbuvi_Tech.user.id, { text: 'ARSLAN-MD~' + b64data });
+                    
+                    // --- ENCRYPTION CHANGE START ---
+                    let compressed = zlib.gzipSync(data);
+                    let b64data = compressed.toString('base64');
+                    let session = await Pair_Code_By_Mbuvi_Tech.sendMessage(Pair_Code_By_Mbuvi_Tech.user.id, { text: 'BWM-XMD;;;' + b64data });
+                    // --- ENCRYPTION CHANGE END ---
 
                     let Mbuvi_MD_TEXT = `
         
@@ -87,7 +92,7 @@ router.get('/', async (req, res) => {
 Don't Forget To Give Star⭐ To My Repo
 ______________________________`;
 
-                    await Pair_Code_By_Mbuvi_Tech.sendMessage(Pair_Code_By_Mbuvi_Tech.user.id, { text: Toxic_MD_TEXT }, { quoted: session });
+                    await Pair_Code_By_Mbuvi_Tech.sendMessage(Pair_Code_By_Mbuvi_Tech.user.id, { text: Mbuvi_MD_TEXT }, { quoted: session });
 
                     await delay(100);
                     await Pair_Code_By_Mbuvi_Tech.ws.close();
