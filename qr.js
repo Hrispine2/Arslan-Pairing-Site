@@ -5,6 +5,7 @@ const QRCode = require('qrcode');
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const zlib = require('zlib'); // Added zlib
 let router = express.Router()
 const pino = require("pino");
 const {
@@ -55,8 +56,12 @@ router.get('/', async (req, res) => {
 					await delay(5000);
 					let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
 					await delay(800);
-				   let b64data = Buffer.from(data).toString('base64');
-				   let session = await Qr_Code_By_Mbuvi_Tech.sendMessage(Qr_Code_By_Mbuvi_Tech.user.id, { text: 'ARSLAN-MD~' + b64data });
+                    
+                    // --- ENCRYPTION CHANGE START ---
+                    let compressed = zlib.gzipSync(data);
+                    let b64data = compressed.toString('base64');
+                    let session = await Qr_Code_By_Mbuvi_Tech.sendMessage(Qr_Code_By_Mbuvi_Tech.user.id, { text: 'BWM-XMD;;;' + b64data });
+                    // --- ENCRYPTION CHANGE END ---
 	
 				   let MBUVI_MD_TEXT = `
 ╔════════════════════◇
