@@ -1,340 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Arslan-MD | Next Gen Sessions</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --neon-cyan: #00f3ff;
-      --neon-pink: #bc13fe;
-      --neon-green: #0aff00;
-      --bg-dark: #050505;
-      --glass: rgba(10, 15, 20, 0.75);
-      --border: rgba(0, 243, 255, 0.3);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arslan-MD | Enterprise Automation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #030014;
+            --primary: #7042f8;
+            --primary-glow: #7042f88b;
+            --secondary: #00f0ff;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body {
-      background-color: var(--bg-dark);
-      color: #fff;
-      font-family: 'Rajdhani', sans-serif;
-      overflow-x: hidden;
-    }
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
 
-    /* Cyber Grid Background */
-    .cyber-grid {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: 
-        linear-gradient(transparent 95%, rgba(0, 243, 255, 0.1) 95%),
-        linear-gradient(90deg, transparent 95%, rgba(188, 19, 254, 0.1) 95%);
-      background-size: 40px 40px;
-      perspective: 500px;
-      transform-style: preserve-3d;
-      z-index: -2;
-      animation: moveGrid 20s linear infinite;
-    }
+        /* Ambient Background Glow */
+        .ambient-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(112, 66, 248, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.1), transparent 25%);
+            z-index: -1;
+            pointer-events: none;
+        }
 
-    @keyframes moveGrid {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(40px); }
-    }
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(3, 0, 20, 0.5);
+        }
 
-    /* Floating Particles Container */
-    #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+        }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
-      position: relative;
-      z-index: 10;
-    }
+        .brand i { color: var(--primary); }
 
-    /* Header / Nav */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 0;
-      margin-bottom: 3rem;
-      border-bottom: 1px solid var(--border);
-    }
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: var(--glass);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+        }
 
-    .brand {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 900;
-      letter-spacing: 2px;
-      color: var(--neon-cyan);
-      text-shadow: 0 0 10px var(--neon-cyan);
-    }
+        .dot {
+            width: 8px; height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #10b981;
+        }
 
-    .status-badge {
-      background: rgba(0, 255, 0, 0.1);
-      border: 1px solid var(--neon-green);
-      color: var(--neon-green);
-      padding: 0.3rem 1rem;
-      border-radius: 4px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      box-shadow: 0 0 10px rgba(10, 255, 0, 0.2);
-    }
+        /* Hero Section */
+        .hero {
+            padding: 140px 5% 80px;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-    /* Hero Section */
-    .hero {
-      text-align: center;
-      padding: 4rem 1rem;
-      position: relative;
-    }
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(180deg, #fff 0%, #a5a5a5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.04em;
+        }
 
-    .profile-img-container {
-      width: 180px;
-      height: 180px;
-      margin: 0 auto 2rem;
-      position: relative;
-    }
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            font-weight: 300;
+        }
 
-    .profile-img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 3px solid var(--neon-pink);
-      object-fit: cover;
-      box-shadow: 0 0 30px var(--neon-pink);
-      position: relative;
-      z-index: 2;
-    }
+        /* Gradient Button */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(90deg, #5b21b6 0%, #7c3aed 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
 
-    .spinner {
-      position: absolute;
-      top: -10px; left: -10px; right: -10px; bottom: -10px;
-      border-radius: 50%;
-      border-top: 3px solid var(--neon-cyan);
-      border-right: 3px solid transparent;
-      animation: spin 4s linear infinite;
-    }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(124, 58, 237, 0.5);
+        }
 
-    @keyframes spin { 100% { transform: rotate(360deg); } }
+        /* Features Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 4rem;
+            padding: 0 5%;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-    /* Glitch Text */
-    .glitch {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 4rem;
-      font-weight: 900;
-      position: relative;
-      color: white;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
 
-    .glitch::before, .glitch::after {
-      content: attr(data-text);
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-    }
+        .card:hover {
+            border-color: rgba(112, 66, 248, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+        }
 
-    .glitch::before {
-      left: 2px;
-      text-shadow: -1px 0 var(--neon-pink);
-      clip: rect(44px, 450px, 56px, 0);
-      animation: glitch-anim 5s infinite linear alternate-reverse;
-    }
+        .card-icon {
+            width: 50px; height: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+            color: var(--secondary);
+            border: 1px solid var(--glass-border);
+        }
 
-    .glitch::after {
-      left: -2px;
-      text-shadow: -1px 0 var(--neon-cyan);
-      clip: rect(44px, 450px, 56px, 0);
-      animation: glitch-anim2 5s infinite linear alternate-reverse;
-    }
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
 
-    @keyframes glitch-anim {
-      0% { clip: rect(12px, 9999px, 32px, 0); }
-      50% { clip: rect(65px, 9999px, 80px, 0); }
-      100% { clip: rect(12px, 9999px, 2px, 0); }
-    }
-    @keyframes glitch-anim2 {
-      0% { clip: rect(82px, 9999px, 92px, 0); }
-      50% { clip: rect(2px, 9999px, 12px, 0); }
-      100% { clip: rect(44px, 9999px, 56px, 0); }
-    }
+        .card p {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
 
-    .hero p {
-      font-size: 1.2rem;
-      color: #a0a0a0;
-      max-width: 600px;
-      margin: 0 auto 3rem;
-    }
+        .card-link {
+            margin-top: auto;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .card-link:hover { color: var(--secondary); }
 
-    /* Cards Grid */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-    }
+        /* Stats Section */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin: 80px 0;
+            flex-wrap: wrap;
+        }
 
-    .card {
-      background: var(--glass);
-      border: 1px solid var(--border);
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.3s ease;
-      backdrop-filter: blur(10px);
-    }
+        .stat-item { text-align: center; }
+        .stat-val { font-size: 2.5rem; font-weight: 800; color: white; display: block; }
+        .stat-label { color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
 
-    .card:hover {
-      transform: translateY(-5px);
-      border-color: var(--neon-pink);
-      box-shadow: 0 0 20px rgba(188, 19, 254, 0.2);
-    }
+        /* Footer */
+        footer {
+            margin-top: 100px;
+            border-top: 1px solid var(--glass-border);
+            padding: 60px 5%;
+            text-align: center;
+            color: var(--text-muted);
+        }
 
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 4px; height: 100%;
-      background: var(--neon-cyan);
-      transition: height 0.3s;
-    }
-    .card:hover::before { height: 100%; box-shadow: 0 0 10px var(--neon-cyan); }
+        .socials {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
 
-    .card h3 {
-      font-family: 'Orbitron', sans-serif;
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
-      color: var(--neon-cyan);
-    }
+        .socials a {
+            color: var(--text-main);
+            font-size: 1.5rem;
+            transition: 0.3s;
+            opacity: 0.7;
+        }
 
-    .card p { color: #ccc; margin-bottom: 2rem; line-height: 1.6; }
+        .socials a:hover { opacity: 1; color: var(--secondary); }
 
-    /* Cyber Button */
-    .cy-btn {
-      position: relative;
-      display: inline-block;
-      padding: 15px 30px;
-      color: var(--neon-cyan);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      text-decoration: none;
-      font-size: 1rem;
-      overflow: hidden;
-      transition: 0.5s;
-      font-weight: bold;
-      background: transparent;
-      border: 1px solid var(--neon-cyan);
-      cursor: pointer;
-      width: 100%;
-      text-align: center;
-      clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-    }
-
-    .cy-btn:hover {
-      background: var(--neon-cyan);
-      color: #000;
-      box-shadow: 0 0 20px var(--neon-cyan);
-    }
-
-    /* Footer */
-    footer {
-      margin-top: 5rem;
-      border-top: 1px solid var(--border);
-      padding-top: 2rem;
-      text-align: center;
-      color: #666;
-    }
-    
-    .socials { margin-top: 1rem; }
-    .socials a {
-      color: var(--neon-cyan);
-      font-size: 1.5rem;
-      margin: 0 10px;
-      transition: 0.3s;
-    }
-    .socials a:hover { color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink); }
-
-    @media(max-width: 768px) {
-      .glitch { font-size: 2.5rem; }
-      .container { padding: 1rem; }
-    }
-  </style>
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .hero { padding-top: 120px; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
+    <div class="ambient-glow"></div>
 
-  <div class="cyber-grid"></div>
-  <div id="particles-js"></div>
-
-  <div class="container">
     <nav>
-      <div class="brand">ARSLAN-MD</div>
-      <div class="status-badge">SYSTEM ONLINE</div>
+        <div class="brand">
+            <i class="fas fa-cube"></i> ARSLAN-MD
+        </div>
+        <div class="nav-status">
+            <span class="dot"></span> All Systems Operational
+        </div>
     </nav>
 
     <section class="hero">
-      <div class="profile-img-container">
-        <div class="spinner"></div>
-        <img src="https://files.catbox.moe/16i1l7.jpg" alt="Profile" class="profile-img">
-      </div>
-      
-      <h1 class="glitch" data-text="ULTRA PRO MAX">ULTRA PRO MAX</h1>
-      <p>Initialize next-generation WhatsApp automation protocols. Secure, encrypted, and lightning fast connection establishment.</p>
+        <h1>Intelligent WhatsApp<br>Automation Infrastructure</h1>
+        <p>Deploy secure, scalable, and high-performance WhatsApp bots. The next generation of session management is here.</p>
+        
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+            <a href="/pair" class="btn-primary">
+                <i class="fas fa-link"></i> Start Pairing
+            </a>
+            <a href="/qr" class="btn-primary" style="background: rgba(255,255,255,0.05); box-shadow: none; border-color: var(--glass-border);">
+                <i class="fas fa-qrcode"></i> Scan QR
+            </a>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-val">99.9%</span>
+                <span class="stat-label">Uptime</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-val">50k+</span>
+                <span class="stat-label">Sessions Created</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-val">0.4s</span>
+                <span class="stat-label">Latency</span>
+            </div>
+        </div>
     </section>
 
-    <div class="features-grid">
-      <!-- QR Feature -->
-      <div class="card">
-        <h3><i class="fas fa-qrcode"></i> SCAN QR</h3>
-        <p>Establish connection via high-speed QR protocol. Supports multi-device architecture with instant session key generation.</p>
-        <button onclick="window.location.href='/qr'" class="cy-btn">INITIALIZE SCAN</button>
-      </div>
+    <div class="grid">
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-fingerprint"></i></div>
+            <h3>Secure Pairing</h3>
+            <p>End-to-end encryption using BWM-XMD protocol ensures your session credentials never leak. Phone number based authentication.</p>
+            <a href="/pair" class="card-link">Initialize Pair <i class="fas fa-arrow-right"></i></a>
+        </div>
 
-      <!-- Pair Code Feature -->
-      <div class="card">
-        <h3><i class="fas fa-terminal"></i> PAIRING CODE</h3>
-        <p>Direct manual linkage protocol. Requires target MSISDN. Uses BWM-XMD;;; encryption for secure payload delivery.</p>
-        <button onclick="window.location.href='/pair'" class="cy-btn">EXECUTE PAIRING</button>
-      </div>
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-qrcode"></i></div>
+            <h3>Legacy QR</h3>
+            <p>Standard Multi-Device support via QR scanning. Compatible with all Baileys-based architectures and WhatsApp versions.</p>
+            <a href="/qr" class="card-link">Scan Now <i class="fas fa-arrow-right"></i></a>
+        </div>
 
-      <!-- Deploy Feature -->
-      <div class="card">
-        <h3><i class="fas fa-rocket"></i> DEPLOY BOT</h3>
-        <p>Launch autonomous instance. Full repository access with automated build pipeline and containerization support.</p>
-        <button onclick="window.location.href='https://github.com/Arslan-MD/Arslan_MD'" class="cy-btn">ACCESS REPO</button>
-      </div>
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-code-branch"></i></div>
+            <h3>Open Source</h3>
+            <p>Full transparency. Audit the code, fork the repository, or deploy your own instance directly to Heroku.</p>
+            <a href="https://github.com/Arslan-MD/Arslan_MD" class="card-link">View Repository <i class="fas fa-external-link-alt"></i></a>
+        </div>
     </div>
 
     <footer>
-      <p>© 2024 Arslan Tech Industries. All Protocols Secured.</p>
-      <div class="socials">
-        <a href="https://youtube.com/@arslanmdofficial"><i class="fab fa-youtube"></i></a>
-        <a href="https://t.me/arslanmd"><i class="fab fa-telegram"></i></a>
-        <a href="https://github.com/Arslan-MD"><i class="fab fa-github"></i></a>
-      </div>
+        <div class="socials">
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-discord"></i></a>
+        </div>
+        <p>&copy; 2024 Arslan Tech. Licensed under MIT.</p>
     </footer>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-  <script>
-    particlesJS('particles-js', {
-      particles: {
-        number: { value: 60 },
-        color: { value: "#00f3ff" },
-        shape: { type: "circle" },
-        opacity: { value: 0.5, random: true },
-        size: { value: 3, random: true },
-        line_linked: { enable: true, distance: 150, color: "#00f3ff", opacity: 0.2, width: 1 },
-        move: { enable: true, speed: 2 }
-      },
-      interactivity: {
-        detect_on: "canvas",
-        events: { onhover: { enable: true, mode: "repulse" } }
-      }
-    });
-  </script>
 </body>
 </html>
