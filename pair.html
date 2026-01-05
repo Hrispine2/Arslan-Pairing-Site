@@ -3,817 +3,328 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Arslan-MD Ultra Pro Max Dashboard</title>
+  <title>Terminal | Pairing Protocol</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
   <style>
     :root {
-      --primary: linear-gradient(135deg, #FF4500, #228B22, #00CED1);
-      --secondary: linear-gradient(135deg, #FF1493, #8A2BE2);
-      --bg: #0a0a12;
-      --glass: rgba(255, 255, 255, 0.08);
-      --glass-dark: rgba(0, 0, 0, 0.4);
-      --text: #ffffff;
-      --muted: #a0a0c0;
-      --highlight: #00FFFF;
-      --highlight-glow: 0 0 20px rgba(0, 255, 255, 0.7);
-      --radius: 20px;
-      --blur: 15px;
-      --transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --term-green: #0aff00;
+      --term-bg: #0a0a0a;
+      --term-glass: rgba(10, 20, 10, 0.9);
+      --error: #ff0055;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Montserrat', sans-serif;
+      background: #000;
+      color: var(--term-green);
+      font-family: 'Share Tech Mono', monospace;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
+      background-image: radial-gradient(circle at center, #112211 0%, #000 100%);
+    }
+
+    /* CRT Scanline Effect */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .terminal-window {
+      width: 100%;
+      max-width: 500px;
+      background: var(--term-glass);
+      border: 2px solid var(--term-green);
+      border-radius: 5px;
+      box-shadow: 0 0 20px rgba(10, 255, 0, 0.2);
+      padding: 2px;
       position: relative;
-      overflow-x: hidden;
-      color: var(--text);
-      background: var(--bg);
-      padding: 100px 20px 150px;
     }
 
-    /* Animated Background */
-    .animated-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -3;
-      background: 
-        radial-gradient(circle at 20% 80%, rgba(255, 69, 0, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(34, 139, 34, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(0, 206, 209, 0.1) 0%, transparent 50%);
-      animation: bgPulse 15s ease-in-out infinite;
-    }
-
-    @keyframes bgPulse {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 0.8; }
-    }
-
-    /* Particle Background */
-    #particles-js {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
-    }
-
-    /* Header with logo */
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+    .term-header {
+      background: var(--term-green);
+      color: #000;
+      padding: 5px 10px;
+      font-weight: bold;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 1.2rem 2.5rem;
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      z-index: 100;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .logo-container {
-      display: flex;
-      align-items: center;
-      gap: 1.2rem;
-    }
-
-    .logo-img {
-      height: 50px;
-      width: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid transparent;
-      background: var(--primary);
-      padding: 2px;
-      box-shadow: var(--highlight-glow);
-      animation: logoSpin 10s linear infinite;
-    }
-
-    @keyframes logoSpin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .logo-text {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 900;
-      background: var(--primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 20px rgba(255, 69, 0, 0.5);
-      letter-spacing: 1px;
-    }
-
-    /* Battery indicator */
-    .battery-container {
-      background: var(--glass-dark);
-      border-radius: 50px;
-      padding: 0.7rem 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-size: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .battery-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      transition: left 0.7s ease;
-    }
-
-    .battery-container:hover::before {
-      left: 100%;
-    }
-
-    .battery-icon {
-      color: var(--highlight);
-      font-size: 1.5rem;
-      filter: drop-shadow(0 0 5px var(--highlight));
-    }
-
-    /* Main container */
-    .main-content {
-      width: 100%;
-      max-width: 600px;
-      display: flex;
-      flex-direction: column;
-      gap: 2.5rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Pairing box */
-    .box {
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      border-radius: var(--radius);
-      padding: 2.5rem;
-      text-align: center;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .box::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: var(--primary);
-    }
-
-    .box:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), var(--highlight-glow);
-    }
-
-    .box h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
-      background: var(--primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 20px rgba(255, 69, 0, 0.5);
-      letter-spacing: 1px;
-    }
-
-    .box h5 {
-      color: var(--muted);
-      margin-bottom: 1.5rem;
-      font-weight: normal;
-      font-size: 1.1rem;
-    }
-
-    /* Input styling */
-    .input-container {
-      display: flex;
-      gap: 0.8rem;
-      margin-bottom: 1.8rem;
-    }
-
-    .input-container input {
-      flex: 1;
-      padding: 1.2rem;
-      border-radius: var(--radius);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: var(--glass-dark);
-      color: var(--text);
-      font-family: inherit;
-      transition: var(--transition);
-      font-size: 1.1rem;
-    }
-
-    .input-container input:focus {
-      outline: none;
-      border-color: var(--highlight);
-      box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.3);
-    }
-
-    .input-container button {
-      padding: 1.2rem 2rem;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: 'Orbitron', sans-serif;
-      letter-spacing: 1px;
       text-transform: uppercase;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
 
-    .input-container button:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), var(--highlight-glow);
+    .term-body {
+      padding: 20px;
     }
 
-    /* Result display */
-    #pair-result {
-      margin-top: 1.8rem;
-      padding: 1.5rem;
-      border-radius: var(--radius);
-      background: var(--glass-dark);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      min-height: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-    }
-
-    #copy-code {
-      background: var(--glass);
-      border: 2px solid var(--highlight);
-      padding: 1rem 2rem;
-      border-radius: 50px;
-      color: white;
-      cursor: pointer;
-      font-weight: 700;
-      transition: var(--transition);
-      margin-top: 1.5rem;
-      display: none;
-      font-family: 'Orbitron', sans-serif;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-    }
-
-    #copy-code:hover {
-      background: rgba(0, 255, 255, 0.1);
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
-      transform: translateY(-3px);
-    }
-
-    /* Music player */
-    .music-player {
-      width: 100%;
-      max-width: 600px;
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      border-radius: var(--radius);
-      padding: 2rem;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      z-index: 90;
+    .logo-area {
       text-align: center;
-      margin-top: 2rem;
-      position: relative;
-      overflow: hidden;
+      margin-bottom: 20px;
+      border-bottom: 1px dashed var(--term-green);
+      padding-bottom: 15px;
     }
 
-    .music-player::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: var(--secondary);
-    }
-
-    .music-player h3 {
-      color: var(--highlight);
-      margin-bottom: 0.8rem;
-      font-size: 1.5rem;
+    h2 {
       font-family: 'Orbitron', sans-serif;
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+      letter-spacing: 2px;
+      margin-bottom: 5px;
     }
 
-    .music-title {
+    .status-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    /* Input Styling */
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
       font-weight: bold;
-      font-size: 1.3rem;
-      margin-bottom: 0.5rem;
-      background: var(--secondary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
 
-    .music-subtitle {
-      color: var(--muted);
-      font-size: 1rem;
-      margin-bottom: 1.5rem;
+    .prefix {
+      position: absolute;
+      top: 32px;
+      left: 10px;
+      color: var(--term-green);
+      z-index: 2;
     }
 
-    .play-btn {
-      background: var(--secondary);
-      border: none;
-      border-radius: 50%;
-      width: 70px;
-      height: 70px;
+    input[type="number"] {
+      width: 100%;
+      background: rgba(0, 20, 0, 0.5);
+      border: 1px solid var(--term-green);
+      color: var(--term-green);
+      padding: 10px 10px 10px 25px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1.1rem;
+      outline: none;
+    }
+
+    input[type="number"]:focus {
+      box-shadow: 0 0 10px rgba(10, 255, 0, 0.3);
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--term-green);
+      color: var(--term-green);
+      padding: 12px;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--term-green);
+      color: #000;
+      box-shadow: 0 0 15px var(--term-green);
+    }
+
+    .btn:disabled {
+      border-color: #555;
+      color: #555;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Output Area */
+    .output-area {
+      margin-top: 20px;
+      min-height: 100px;
+      border: 1px solid #333;
+      padding: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto;
-      cursor: pointer;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-      transition: var(--transition);
+      background: #000;
+    }
+
+    .code-display {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 5px;
+      color: #fff;
+      text-shadow: 0 0 10px #fff;
+    }
+
+    .loading-bar {
+      width: 100%;
+      height: 20px;
+      background: #111;
+      display: none;
       position: relative;
       overflow: hidden;
     }
 
-    .play-btn::before {
+    .loading-bar::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transform: translateX(-100%);
-      transition: transform 0.6s ease;
+      top: 0; left: 0; bottom: 0; width: 50%;
+      background: var(--term-green);
+      animation: load 1s infinite ease-in-out;
     }
 
-    .play-btn:hover::before {
-      transform: translateX(100%);
+    @keyframes load {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
     }
 
-    .play-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 20, 147, 0.5);
-    }
-
-    .play-btn i {
-      color: white;
-      font-size: 1.8rem;
-    }
-
-    .time-display {
-      margin-top: 1.2rem;
-      font-size: 1rem;
-      color: var(--muted);
-      font-family: 'Orbitron', sans-serif;
-    }
-
-    /* Progress bar */
-    .progress-container {
-      width: 100%;
-      height: 6px;
-      background: var(--glass-dark);
-      border-radius: 3px;
+    /* Footer */
+    .footer-links {
       margin-top: 1rem;
-      overflow: hidden;
+      text-align: center;
     }
+    .footer-links a {
+      color: #555;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    .footer-links a:hover { color: var(--term-green); }
 
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: var(--secondary);
-      border-radius: 3px;
-      transition: width 0.3s ease;
+    /* Ping Animation */
+    .ping {
+      width: 10px; height: 10px;
+      background: var(--term-green);
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 5px var(--term-green);
+      animation: blink 2s infinite;
     }
-
-    /* Visualizer */
-    .visualizer {
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      height: 60px;
-      margin-top: 1.5rem;
-      gap: 4px;
-    }
-
-    .bar {
-      width: 6px;
-      background: var(--highlight);
-      border-radius: 3px;
-      transition: height 0.2s ease;
-    }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
-      .header {
-        padding: 1rem 1.5rem;
-      }
-      
-      .logo-text {
-        font-size: 1.4rem;
-      }
-      
-      body {
-        padding: 90px 15px 120px;
-      }
-      
-      .input-container {
-        flex-direction: column;
-      }
-      
-      .input-container button {
-        width: 100%;
-      }
-      
-      .music-player {
-        padding: 1.5rem;
-      }
-      
-      .box, .music-player {
-        padding: 2rem 1.5rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .logo-text {
-        font-size: 1.2rem;
-      }
-      
-      .box h2 {
-        font-size: 1.8rem;
-      }
-      
-      .input-container input {
-        padding: 1rem;
-      }
-    }
+    @keyframes blink { 50% { opacity: 0.3; } }
   </style>
 </head>
 <body>
-  <!-- Animated Background -->
-  <div class="animated-bg"></div>
-  
-  <!-- Particle Background -->
-  <div id="particles-js"></div>
 
-  <!-- Header with Logo -->
-  <header class="header">
-    <div class="logo-container">
-      <img src="https://files.catbox.moe/a6chsf.jpg" alt="Arslan-MD bot Logo" class="logo-img">
-      <div class="logo-text">ARSLAN-MD ULTRA PRO MAX</div>
+  <div class="terminal-window">
+    <div class="term-header">
+      <span>Arslan-MD.exe</span>
+      <span>v2.0.4 [SECURE]</span>
     </div>
     
-    <!-- Battery Indicator -->
-    <div class="battery-container">
-      <i class="fas fa-battery-full battery-icon" id="battery-icon"></i>
-      <span id="battery-level">--%</span>
-    </div>
-  </header>
+    <div class="term-body">
+      <div class="logo-area">
+        <h2>PAIRING PROTOCOL</h2>
+        <div class="status-line">
+          <span>SERVER: <span class="ping"></span> ONLINE</span>
+          <span>LATENCY: 42ms</span>
+        </div>
+      </div>
 
-  <!-- Main Content Container -->
-  <div class="main-content">
-    <!-- Pairing Box -->
-    <div class="box">
-      <h2>ULTRA PAIRING SYSTEM</h2>
-      <h5>ARSLAN-MD BOT PREMIUM</h5>
-      <p>Enter your number without country code for instant pairing</p>
-      
-      <div class="input-container">
-        <input type="number" id="number" placeholder="Enter your number" required>
-        <button id="submit">REQUEST CODE</button>
-      </div>
-      
-      <div id="pair-result">
-        <p id="waiting-message" style="display: none;">Processing your request...</p>
-      </div>
-      
-      <button id="copy-code" onclick="copyCode()">COPY YOUR CODE</button>
-    </div>
+      <form id="pairForm">
+        <div class="input-group">
+          <label>> ENTER TARGET MSISDN (With Country Code)</label>
+          <span class="prefix">+</span>
+          <input type="number" id="number" placeholder="923001234567" required>
+        </div>
 
-    <!-- Music Player -->
-    <div class="music-player">
-      <h3>PREMIUM MUSIC PLAYER</h3>
-      <div class="music-title">ARSALAN-MD THEME</div>
-      <div class="music-subtitle">ULTRA PRO MAX EDITION</div>
-      
-      <button class="play-btn" onclick="togglePlay()">
-        <i class="fas fa-pause" id="play-icon"></i>
-      </button>
-      
-      <div class="time-display" id="time1">0:00</div>
-      
-      <div class="progress-container">
-        <div class="progress-bar" id="progress-bar"></div>
+        <button type="submit" id="submitBtn" class="btn">INITIALIZE PAIRING</button>
+      </form>
+
+      <div class="output-area" id="output">
+        <span style="color: #444;">[ WAITING FOR INPUT ]</span>
       </div>
+
+      <div class="loading-bar" id="loader"></div>
       
-      <div class="visualizer" id="visualizer"></div>
-      
-      <audio id="audio1" src="https://files.catbox.moe/svi5pb.mp3" loop></audio>
+      <button id="copyBtn" class="btn" style="margin-top:10px; display:none;">COPY KEY</button>
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <div class="footer-links">
+    <a href="/"><i class="fas fa-home"></i> HOME</a>
+    <a href="https://github.com/Arslan-MD"><i class="fab fa-github"></i> GITHUB</a>
+    <a href="https://t.me/arslanmd"><i class="fab fa-telegram"></i> SUPPORT</a>
+  </div>
+
   <script>
-    // Initialize particles
-    particlesJS('particles-js', {
-      particles: {
-        number: { value: 80, density: { enable: true, value_area: 800 } },
-        color: { value: ["#FF4500", "#228B22", "#00CED1", "#FF1493"] },
-        shape: { type: "circle" },
-        opacity: { 
-          value: 0.5, 
-          random: true,
-          anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false }
-        },
-        size: { 
-          value: 3, 
-          random: true,
-          anim: { enable: true, speed: 4, size_min: 0.3, sync: false }
-        },
-        line_linked: {
-          enable: true,
-          distance: 150,
-          color: "#00FFFF",
-          opacity: 0.2,
-          width: 1
-        },
-        move: {
-          enable: true,
-          speed: 2,
-          direction: "none",
-          random: true,
-          straight: false,
-          out_mode: "out",
-          bounce: false,
-          attract: { enable: false, rotateX: 600, rotateY: 1200 }
-        }
-      },
-      interactivity: {
-        detect_on: "canvas",
-        events: {
-          onhover: { enable: true, mode: "repulse" },
-          onclick: { enable: true, mode: "push" },
-          resize: true
-        }
-      },
-      retina_detect: true
-    });
+    const form = document.getElementById('pairForm');
+    const input = document.getElementById('number');
+    const output = document.getElementById('output');
+    const loader = document.getElementById('loader');
+    const submitBtn = document.getElementById('submitBtn');
+    const copyBtn = document.getElementById('copyBtn');
 
-    // DOM elements
-    const pairResult = document.getElementById("pair-result");
-    const submitBtn = document.getElementById("submit");
-    const numberInput = document.getElementById("number");
-    const copyCodeBtn = document.getElementById("copy-code");
-    const waitingMessage = document.getElementById("waiting-message");
-    const batteryLevel = document.getElementById("battery-level");
-    const batteryIcon = document.getElementById("battery-icon");
-
-    // Copy code function
-    async function copyCode() {
-      const code = pairResult.innerText.replace('CODE: ', '');
-      try {
-        await navigator.clipboard.writeText(code);
-        copyCodeBtn.innerText = "COPIED!";
-        copyCodeBtn.style.background = "linear-gradient(135deg, #00ff00, #00cc00)";
-        copyCodeBtn.style.color = "#000";
-        setTimeout(() => {
-          copyCodeBtn.innerText = "COPY CODE";
-          copyCodeBtn.style.background = "";
-          copyCodeBtn.style.color = "";
-        }, 2000);
-      } catch (err) {
-        console.error('Failed to copy: ', err);
-      }
-    }
-
-    // Submit handler
-    submitBtn.addEventListener("click", async (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      if (!numberInput.value) {
-        pairResult.innerHTML = '<p style="color:var(--highlight); font-weight:bold;">Please enter your WhatsApp number</p>';
+      const number = input.value.replace(/[^0-9]/g, '');
+      if (number.length < 10) {
+        output.innerHTML = '<span style="color: var(--error)">>> ERROR: INVALID MSISDN LENGTH</span>';
         return;
       }
-      
-      const cleanNumber = numberInput.value.replace(/[^0-9]/g, "");
-      
-      if (cleanNumber.length < 11) {
-        pairResult.innerHTML = '<p style="color:#ff5555; font-weight:bold;">Invalid Number Format</p>';
-        return;
-      }
-      
-      // Format number display
-      let formattedNumber = "";
-      const digits = cleanNumber.split('');
-      digits.forEach((digit, index) => {
-        formattedNumber += digit;
-        if (index === 2 || index === 7) {
-          formattedNumber += " ";
-        }
-      });
-      
-      numberInput.type = "text";
-      numberInput.value = "+" + formattedNumber;
-      numberInput.style.color = "var(--highlight)";
-      numberInput.style.fontWeight = "bold";
-      
-      waitingMessage.style.display = "block";
-      pairResult.innerHTML = "";
-      copyCodeBtn.style.display = "none";
-      
-      // Simulate API call with loading animation
-      let dots = 0;
-      const loadingInterval = setInterval(() => {
-        dots = (dots + 1) % 4;
-        waitingMessage.textContent = "Processing your request" + ".".repeat(dots);
-      }, 500);
-      
+
+      // UI State: Loading
+      submitBtn.disabled = true;
+      submitBtn.innerText = "ESTABLISHING CONNECTION...";
+      loader.style.display = "block";
+      output.style.display = "none";
+      copyBtn.style.display = "none";
+
       try {
-        // Simulate API delay
-        setTimeout(async () => {
-          try {
-            const { data } = await axios(`/code?number=${cleanNumber}`);
-            const code = data.code || "SERVICE_UNAVAILABLE";
-            
-            clearInterval(loadingInterval);
-            pairResult.innerHTML = `
-              <p style="color:var(--highlight); font-weight:bold; font-size:1.4rem;">
-                CODE: <span style="color:white; text-shadow: 0 0 10px white;">${code}</span>
-              </p>
-            `;
-            copyCodeBtn.style.display = "inline-block";
-            waitingMessage.style.display = "none";
-            
-            // Add success animation
-            pairResult.style.animation = "pulse 0.5s ease";
-            setTimeout(() => {
-              pairResult.style.animation = "";
-            }, 500);
-          } catch (error) {
-            clearInterval(loadingInterval);
-            pairResult.innerHTML = '<p style="color:#ff5555; font-weight:bold;">Error getting pairing code</p>';
-            waitingMessage.style.display = "none";
-          }
-        }, 2000);
-      } catch (error) {
-        clearInterval(loadingInterval);
-        pairResult.innerHTML = '<p style="color:#ff5555; font-weight:bold;">Network Error</p>';
-        waitingMessage.style.display = "none";
-      }
-    });
+        // API Call
+        const response = await axios.get(`/code?number=${number}`);
+        const code = response.data.code;
 
-    // Music player controls
-    const audio = document.getElementById('audio1');
-    const playBtn = document.querySelector('.play-btn');
-    const playIcon = document.getElementById('play-icon');
-    const timeDisplay = document.getElementById('time1');
-    const progressBar = document.getElementById('progress-bar');
-    const visualizer = document.getElementById('visualizer');
-
-    // Create visualizer bars
-    for (let i = 0; i < 30; i++) {
-      const bar = document.createElement('div');
-      bar.className = 'bar';
-      bar.style.height = `${Math.random() * 40 + 10}px`;
-      visualizer.appendChild(bar);
-    }
-
-    const bars = document.querySelectorAll('.bar');
-
-    // Auto-play music when page loads (with user interaction)
-    document.addEventListener('click', function initAudio() {
-      audio.play().then(() => {
-        playIcon.classList.replace('fa-play', 'fa-pause');
-        updateTimeDisplay();
-        animateVisualizer();
-      }).catch(error => {
-        console.log('Auto-play prevented:', error);
-      });
-      document.removeEventListener('click', initAudio);
-    }, { once: true });
-
-    function togglePlay() {
-      if (audio.paused) {
-        audio.play();
-        playIcon.classList.replace('fa-play', 'fa-pause');
-        animateVisualizer();
-      } else {
-        audio.pause();
-        playIcon.classList.replace('fa-pause', 'fa-play');
-      }
-    }
-
-    function updateTimeDisplay() {
-      const minutes = Math.floor(audio.currentTime / 60);
-      const seconds = Math.floor(audio.currentTime % 60);
-      timeDisplay.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
-      
-      // Update progress bar
-      const progress = (audio.currentTime / audio.duration) * 100;
-      progressBar.style.width = `${progress}%`;
-      
-      if (!audio.paused) {
-        requestAnimationFrame(updateTimeDisplay);
-      }
-    }
-
-    function animateVisualizer() {
-      if (!audio.paused) {
-        bars.forEach(bar => {
-          bar.style.height = `${Math.random() * 50 + 10}px`;
-        });
-        requestAnimationFrame(animateVisualizer);
-      }
-    }
-
-    audio.addEventListener('timeupdate', updateTimeDisplay);
-
-    // Battery status indicator
-    async function updateBattery() {
-      if (navigator.getBattery) {
-        try {
-          const battery = await navigator.getBattery();
-          
-          const updateBatteryUI = () => {
-            const batteryPercent = Math.round(battery.level * 100);
-            batteryLevel.textContent = `${batteryPercent}%`;
-            
-            // Update battery icon based on level
-            let iconClass = 'fa-battery-empty';
-            if (batteryPercent > 80) iconClass = 'fa-battery-full';
-            else if (batteryPercent > 60) iconClass = 'fa-battery-three-quarters';
-            else if (batteryPercent > 40) iconClass = 'fa-battery-half';
-            else if (batteryPercent > 20) iconClass = 'fa-battery-quarter';
-            
-            // Add charging bolt if charging
-            if (battery.charging) {
-              batteryIcon.className = `fas fa-bolt ${iconClass}`;
-              batteryIcon.style.color = '#00ff00';
-              batteryIcon.style.filter = 'drop-shadow(0 0 8px #00ff00)';
-            } else {
-              batteryIcon.className = `fas ${iconClass}`;
-              batteryIcon.style.color = 'var(--highlight)';
-              batteryIcon.style.filter = 'drop-shadow(0 0 5px var(--highlight))';
-            }
-          };
-          
-          battery.addEventListener('levelchange', updateBatteryUI);
-          battery.addEventListener('chargingchange', updateBatteryUI);
-          updateBatteryUI();
-        } catch (error) {
-          console.error('Battery API error:', error);
+        if (!code || code === "Service Currently Unavailable") {
+            throw new Error("Service Unavailable");
         }
-      } else {
-        batteryLevel.textContent = "N/A";
-      }
-    }
 
-    // Initialize
-    window.addEventListener('load', () => {
-      copyCodeBtn.style.display = "none";
-      updateBattery();
-      
-      // Smooth page load
-      document.body.style.opacity = '0';
-      document.body.style.transform = 'translateY(20px)';
-      setTimeout(() => {
-        document.body.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-        document.body.style.opacity = '1';
-        document.body.style.transform = 'translateY(0)';
-      }, 100);
+        // Success State
+        loader.style.display = "none";
+        output.style.display = "flex";
+        output.innerHTML = `<div class="code-display">${code}</div>`;
+        copyBtn.style.display = "block";
+        submitBtn.innerText = "RETRY PAIRING";
+        
+        // Copy functionality
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(code);
+          copyBtn.innerText = "COPIED TO CLIPBOARD";
+          setTimeout(() => copyBtn.innerText = "COPY KEY", 2000);
+        };
+
+      } catch (error) {
+        // Error State
+        loader.style.display = "none";
+        output.style.display = "flex";
+        output.innerHTML = '<span style="color: var(--error)">>> CONNECTION FAILED. TRY AGAIN.</span>';
+        submitBtn.innerText = "INITIALIZE PAIRING";
+      } finally {
+        submitBtn.disabled = false;
+      }
     });
+
+    // Simple "Matrix" background logs (console effect)
+    setInterval(() => {
+        const consoleLog = document.createElement('div');
+        // This is purely visual, no actual logs
+    }, 2000);
   </script>
 </body>
 </html>
